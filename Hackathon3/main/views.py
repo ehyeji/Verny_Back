@@ -6,6 +6,10 @@ from rest_framework import views
 from rest_framework import status
 from rest_framework.response import Response
 from django.db.models import Q, Count
+from rest_framework import permissions
+from rest_framework import viewsets
+from rest_framework.decorators import action
+
 
 # Create your views here.
 
@@ -56,8 +60,8 @@ class PostDetailView(views.APIView):  # 작품 해설(detail) 조회
 
 class CommentView(views.APIView):  # 댓글 조회, 작성
     def get(self, request, pk, format=None):
-        comment = Comment.objects.filter(post_id=pk)
-        serializer = CommentSerializer(comment, many=True)
+        comments = Comment.objects.filter(post_id=pk)
+        serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -69,21 +73,38 @@ class CommentView(views.APIView):  # 댓글 조회, 작성
 
 
 class CommentDetailView(views.APIView):  # 댓글 수정,삭제
+    def get(self, request, comment_pk, format=None):
+        g_comment = get_object_or_404(Comment, pk=comment_pk)
+        serializer = CommentSerializer(g_comment)
+        return Response(serializer.data)
+
     def put(self, request, comment_pk, format=None):
-        comment = get_object_or_404(Comment, pk=comment_pk)
-        serializer = CommentSerializer(Comment, data=request.data)
+        p_comment = get_object_or_404(Comment, pk=comment_pk)
+        serializer = CommentSerializer(p_comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
 
     def delete(self, request, comment_pk, format=None):
-        comment = get_object_or_404(Comment, pk=comment_pk)
-        comment.delete()
+        d_comment = get_object_or_404(Comment, pk=comment_pk)
+        d_comment.delete()
         return Response({"message": "댓글 삭제 성공"})
 
 
+""" class CommentList(ListCreateAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = Comment.objects.filter(parent=None)
+ """
+
+
 class RecommentView(views.APIView):
+    def get(self, request, recomment_pk, format=None):
+        recomment = get_object_or_404(Recomment, pk=recomment_pk)
+        serializer = RecommentSerializer(recomment, data=request.data)
+
     def get(self, request, format=None):
         recomments = Recomment.objects.all()
         serializer = RecommentSerializer(recomments, many=True)
