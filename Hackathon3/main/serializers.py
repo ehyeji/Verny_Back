@@ -24,6 +24,7 @@ class CommentSerializer(serializers.ModelSerializer):
     # comment_like = LikeSerializer(many=True, read_only=True)
     likes_count = serializers.SerializerMethodField()
 
+    # recomment_count = serializers.SerializerMethodField()
     # recomments = RecommentSerializer(many=True, read_only=True)
     # recomments = RecommentSerializer(many=True)
     class Meta:
@@ -37,7 +38,11 @@ class CommentSerializer(serializers.ModelSerializer):
             "likes",
             "likes_count",
             # "recomments",
+            # "recomment_count",
         ]
+
+    # def get_recomment_count(self, obj):
+    #    return obj.recomment.count()
 
     def get_likes_count(self, obj):
         return obj.likes.count()
@@ -59,6 +64,7 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             "likes",
             "likes_count",
             "recomments",
+            "recomment_count",
         ]
 
     def get_likes_count(self, obj):
@@ -90,7 +96,7 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.comment.count()
 
 
-class PosDetailSerializer(serializers.ModelSerializer):
+class PostDetailSerializer(serializers.ModelSerializer):
     scraps_count = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()
 
