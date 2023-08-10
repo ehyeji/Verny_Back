@@ -6,9 +6,6 @@ from rest_framework import views
 from rest_framework.status import *
 from rest_framework.response import Response
 from django.db.models import Q, Count
-from rest_framework import permissions
-from rest_framework import viewsets
-from rest_framework.decorators import action
 
 
 # Create your views here.
@@ -162,7 +159,7 @@ class CommentLikeView(views.APIView):  # 댓글 좋아요
             comment.likes.add(user)
             liked = True
 
-        return Response({"message": "좋아요 변경 성공", "liked": liked})
+        return Response({"message": "댓글 좋아요 변경 성공", "liked": liked})
 
 
 class RecommentDetailView(views.APIView):  # 대댓글 조회, 수정, 삭제

@@ -9,7 +9,9 @@ urlpatterns = [
     path("postsadd/", PostAddView.as_view()),
     path("posts/<int:pk>/", PostDetailView.as_view()),
     path("posts/<int:pk>/comments/", CommentView.as_view()),
-    path("posts/<int:pk>/comments/<int:comment_pk>/", CommentDetailView.as_view()),
+    path(
+        "posts/<int:pk>/comments/<int:comment_pk>/", CommentDetailView.as_view()
+    ),  # 대댓글 조회도 가능한 url...
     path("posts/<int:pk>/comments/<int:comment_pk>/likes/", CommentLikeView.as_view()),
     path(
         "posts/<int:pk>/recomments/<int:recomment_pk>/", RecommentDetailView.as_view()

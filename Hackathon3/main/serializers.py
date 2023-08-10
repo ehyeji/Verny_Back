@@ -46,8 +46,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentDetailSerializer(serializers.ModelSerializer):
     # comment_like = LikeSerializer(many=True, read_only=True)
     likes_count = serializers.SerializerMethodField()
-    # recomments = RecommentSerializer(many=True, read_only=True)
-    # reply = serializers.SerializerMethodField()
+    recomments = RecommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Comment
@@ -59,74 +58,11 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             "created_at",
             "likes",
             "likes_count",
-            # "recomments",
-            # "relply"
-        ]
-        read_only_fields = ["author"]  # client가 수정하면 안되는 것들 read_only로 보호!!
-
-    def get_likes_count(self, obj):
-        return obj.likes.count()
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-
-        if self.context["request"].resolver_match.urlname == "comment-list":
-            data.pop("reply")
-        return data
-
-    """ def get_reply(self, instance):
-        serializer = self.__class__(instance.reply, many=True)
-        serializer.bind('', self)
-        return serializer.data """
-
-
-class RecommentSerializer(serializers.ModelSerializer):
-    # recomment_like = LikeSerializer(many=True, read_only=True)
-    relikes_count = serializers.SerializerMethodField()
-    comment = CommentSerializer(many=True, read_only=True)
-    reply = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Comment
-        fields = (
-            "id",
-            "post",
-            "author",
-            "content",
-            "created_at",
-            "likes",
-            "likes_count",
-            # "recomments",
-            "relply",
-        )
-
-    def get_likes_count(self, obj):
-        return obj.likes.count()
-
-    """ def get_relikes_count(self, obj):
-        return obj.relikes.count() """
-
-    def get_reply(self, instance):
-        serializer = self.__class__(instance.reply, many=True)
-        serializer.bind("", self)
-        return serializer.data
-
-
-class CommentDetailSerializer(serializers.ModelSerializer):
-    recomments = RecommentSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = (
-            "id",
-            "post",
-            "author",
-            "content",
-            "created_at",
-            "likes",
-            "likes_count",
             "recomments",
-        )
+        ]
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -142,6 +78,7 @@ class PostSerializer(serializers.ModelSerializer):
             "image",
             "title",
             "painter",
+            "type",
             "scraps_count",
             "comment_count",
         ]
